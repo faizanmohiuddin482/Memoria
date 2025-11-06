@@ -4,9 +4,10 @@ import { deleteMemory } from "@/lib/db/memories";
 // DELETE: Delete a memory
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const searchParams = request.nextUrl.searchParams;
     const userId = searchParams.get("userId");
 
@@ -17,7 +18,7 @@ export async function DELETE(
       );
     }
 
-    await deleteMemory(params.id, userId);
+    await deleteMemory(id, userId);
 
     return NextResponse.json({
       success: true,

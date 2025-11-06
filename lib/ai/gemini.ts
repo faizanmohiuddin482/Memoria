@@ -25,10 +25,17 @@ export const getChatModel = (modelName?: string) => {
 };
 
 // List available models (for debugging)
+// Note: The Google AI SDK doesn't have a listModels method in this version
+// This returns the model names we know are available
 export async function listAvailableModels() {
   try {
-    const models = await genAI.listModels();
-    return models;
+    // Return the model names we support
+    return {
+      models: MODEL_NAMES.map((name) => ({
+        name,
+        displayName: name,
+      })),
+    };
   } catch (error) {
     console.error("Error listing models:", error);
     return null;
@@ -76,8 +83,6 @@ export async function generateResponse(
   query: string,
   relevantMemories: Array<{ content: string; created_at: string }>
 ): Promise<string> {
-  const model = getChatModel();
-
   const memoriesText = relevantMemories
     .map((m, i) => `${i + 1}. ${m.content}`)
     .join("\n");
@@ -98,12 +103,11 @@ Answer:`;
       const result = await model.generateContent(prompt);
       const response = await result.response;
       return response.text();
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       // If it's a 404/model not found error, try next model
-      if (
-        error?.message?.includes("404") ||
-        error?.message?.includes("not found")
-      ) {
+      if (errorMessage.includes("404") || errorMessage.includes("not found")) {
         console.log(`Model ${modelName} not available, trying next...`);
         continue;
       }
