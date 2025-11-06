@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from "react";
 
 interface MemoryInputProps {
   userId: string;
@@ -8,15 +8,37 @@ interface MemoryInputProps {
 }
 
 export function MemoryInput({ userId, onMemoryAdded }: MemoryInputProps) {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const charCount = content.length;
+  const maxChars = 500;
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [content]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!content.trim()) {
-      setMessage({ type: 'error', text: 'Please enter something to remember' });
+      setMessage({ type: "error", text: "Please enter something to remember" });
+      return;
+    }
+
+    if (content.length > maxChars) {
+      setMessage({
+        type: "error",
+        text: `Memory is too long (max ${maxChars} characters)`,
+      });
       return;
     }
 
@@ -24,10 +46,10 @@ export function MemoryInput({ userId, onMemoryAdded }: MemoryInputProps) {
     setMessage(null);
 
     try {
-      const response = await fetch('/api/memories', {
-        method: 'POST',
+      const response = await fetch("/api/memories", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           userId,
@@ -38,20 +60,25 @@ export function MemoryInput({ userId, onMemoryAdded }: MemoryInputProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to store memory');
+        throw new Error(data.error || "Failed to store memory");
       }
 
-      setMessage({ type: 'success', text: 'Memory stored successfully! 🎉' });
-      setContent('');
+      setMessage({ type: "success", text: "Memory stored successfully! 🎉" });
+      setContent("");
       onMemoryAdded();
 
       // Clear success message after 3 seconds
       setTimeout(() => setMessage(null), 3000);
+
+      // Refocus textarea for next input
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 100);
     } catch (error) {
-      console.error('Error storing memory:', error);
+      console.error("Error storing memory:", error);
       setMessage({
-        type: 'error',
-        text: error instanceof Error ? error.message : 'Failed to store memory',
+        type: "error",
+        text: error instanceof Error ? error.message : "Failed to store memory",
       });
     } finally {
       setLoading(false);
@@ -60,37 +87,60 @@ export function MemoryInput({ userId, onMemoryAdded }: MemoryInputProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
+      <div className="relative">
         <textarea
+          ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="I kept my credit card in the wooden shelf..."
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent resize-none transition-all text-white placeholder-gray-500"
           rows={3}
           disabled={loading}
+          maxLength={maxChars}
+          aria-label="Memory input"
         />
+        {charCount > 0 && (
+          <div className="absolute bottom-2 right-2 text-xs text-gray-500 bg-gray-900 px-2 py-1 rounded border border-gray-800">
+            {charCount}/{maxChars}
+          </div>
+        )}
       </div>
-      
+
       {message && (
         <div
           className={`p-3 rounded-lg ${
-            message.type === 'success'
-              ? 'bg-green-50 text-green-800 border border-green-200'
-              : 'bg-red-50 text-red-800 border border-red-200'
+            message.type === "success"
+              ? "bg-green-900/30 text-green-400 border border-green-800"
+              : "bg-red-900/30 text-red-400 border border-red-800"
           }`}
+          role="alert"
         >
-          {message.text}
+          <div className="flex items-center gap-2">
+            {message.type === "success" ? (
+              <span className="text-lg">✓</span>
+            ) : (
+              <span className="text-lg">⚠</span>
+            )}
+            <span>{message.text}</span>
+          </div>
         </div>
       )}
 
       <button
         type="submit"
         disabled={loading || !content.trim()}
-        className="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.98]"
+        aria-label="Store memory"
       >
-        {loading ? 'Storing...' : 'Remember This'}
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="animate-spin">⟳</span>
+            Storing...
+          </span>
+        ) : (
+          "Remember This"
+        )}
       </button>
     </form>
   );
 }
-
