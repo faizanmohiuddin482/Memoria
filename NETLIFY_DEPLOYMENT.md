@@ -45,14 +45,17 @@ git push origin main
 
 4. **Set Environment Variables**
    Before deploying, click "Show advanced" → "New variable" and add:
-
+   
    ```
    GOOGLE_AI_API_KEY=your_google_ai_api_key
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
    NODE_VERSION=20
+   SECRETS_SCAN_OMIT_KEYS=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY
    ```
+   
+   **Note:** `SECRETS_SCAN_OMIT_KEYS` tells Netlify to allow these variables in build output. This is safe because `NEXT_PUBLIC_*` variables are intentionally public (Next.js embeds them in the client bundle).
 
 5. **Deploy**
    - Click "Deploy site"
@@ -89,7 +92,10 @@ git push origin main
    netlify env:set NEXT_PUBLIC_SUPABASE_URL "your_supabase_project_url"
    netlify env:set NEXT_PUBLIC_SUPABASE_ANON_KEY "your_supabase_anon_key"
    netlify env:set SUPABASE_SERVICE_ROLE_KEY "your_supabase_service_role_key"
+   netlify env:set SECRETS_SCAN_OMIT_KEYS "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY"
    ```
+   
+   **Note:** `SECRETS_SCAN_OMIT_KEYS` tells Netlify to allow these variables in build output. This is safe because `NEXT_PUBLIC_*` variables are intentionally public.
 
 5. **Deploy**
    ```bash
@@ -125,6 +131,7 @@ If you need to update environment variables after deployment:
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key         | Supabase Dashboard → Settings → API                        |
 | `SUPABASE_SERVICE_ROLE_KEY`     | Supabase service role key | Supabase Dashboard → Settings → API                        |
 | `NODE_VERSION`                  | Node.js version           | Set to `20`                                                |
+| `SECRETS_SCAN_OMIT_KEYS`        | Allow public vars in build| Set to `NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY` |
 
 ## Troubleshooting
 
@@ -134,6 +141,15 @@ If you need to update environment variables after deployment:
 - Ensure all environment variables are set
 - Verify Node version is set to 20
 - Check that `netlify.toml` is in the root directory
+
+### Secrets Scanning Error
+
+If you see an error about secrets being detected in build output:
+
+- **This is expected** for `NEXT_PUBLIC_*` variables - Next.js embeds them in the client bundle
+- Add `SECRETS_SCAN_OMIT_KEYS` environment variable in Netlify with value: `NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- This tells Netlify these variables are intentionally public and safe to include in build output
+- After adding this variable, trigger a new deploy
 
 ### Authentication Not Working
 
