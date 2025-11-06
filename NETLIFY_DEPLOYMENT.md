@@ -45,7 +45,7 @@ git push origin main
 
 4. **Set Environment Variables**
    Before deploying, click "Show advanced" → "New variable" and add:
-   
+
    ```
    GOOGLE_AI_API_KEY=your_google_ai_api_key
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
@@ -54,7 +54,7 @@ git push origin main
    NODE_VERSION=20
    SECRETS_SCAN_OMIT_KEYS=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY
    ```
-   
+
    **Note:** `SECRETS_SCAN_OMIT_KEYS` tells Netlify to allow these variables in build output. This is safe because `NEXT_PUBLIC_*` variables are intentionally public (Next.js embeds them in the client bundle).
 
 5. **Deploy**
@@ -94,7 +94,7 @@ git push origin main
    netlify env:set SUPABASE_SERVICE_ROLE_KEY "your_supabase_service_role_key"
    netlify env:set SECRETS_SCAN_OMIT_KEYS "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY"
    ```
-   
+
    **Note:** `SECRETS_SCAN_OMIT_KEYS` tells Netlify to allow these variables in build output. This is safe because `NEXT_PUBLIC_*` variables are intentionally public.
 
 5. **Deploy**
@@ -124,14 +124,14 @@ If you need to update environment variables after deployment:
 
 ## Environment Variables Reference
 
-| Variable                        | Description               | Where to Find                                              |
-| ------------------------------- | ------------------------- | ---------------------------------------------------------- |
-| `GOOGLE_AI_API_KEY`             | Google AI Studio API key  | [Google AI Studio](https://aistudio.google.com/app/apikey) |
-| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL      | Supabase Dashboard → Settings → API                        |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key         | Supabase Dashboard → Settings → API                        |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Supabase service role key | Supabase Dashboard → Settings → API                        |
-| `NODE_VERSION`                  | Node.js version           | Set to `20`                                                |
-| `SECRETS_SCAN_OMIT_KEYS`        | Allow public vars in build| Set to `NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+| Variable                        | Description                | Where to Find                                                   |
+| ------------------------------- | -------------------------- | --------------------------------------------------------------- |
+| `GOOGLE_AI_API_KEY`             | Google AI Studio API key   | [Google AI Studio](https://aistudio.google.com/app/apikey)      |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL       | Supabase Dashboard → Settings → API                             |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key          | Supabase Dashboard → Settings → API                             |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Supabase service role key  | Supabase Dashboard → Settings → API                             |
+| `NODE_VERSION`                  | Node.js version            | Set to `20`                                                     |
+| `SECRETS_SCAN_OMIT_KEYS`        | Allow public vars in build | Set to `NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY` |
 
 ## Troubleshooting
 

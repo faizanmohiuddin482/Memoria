@@ -50,13 +50,13 @@ export default function LoginPage() {
 
       if (error) throw error;
 
-      if (data.user) {
-        router.push("/app");
-        router.refresh();
+      // Use window.location for immediate redirect with full page reload
+      // This ensures the session is available when the page loads
+      if (data.session || data.user) {
+        window.location.href = "/app";
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to sign in");
-    } finally {
       setLoading(false);
     }
   };

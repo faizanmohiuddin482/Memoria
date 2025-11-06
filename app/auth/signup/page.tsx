@@ -57,10 +57,9 @@ export default function SignupPage() {
 
       if (data.user) {
         setSuccess(true);
-        // Auto sign in after signup
+        // Auto sign in after signup - use window.location for immediate redirect
         setTimeout(() => {
-          router.push("/app");
-          router.refresh();
+          window.location.href = "/app";
         }, 1500);
       }
     } catch (error) {
