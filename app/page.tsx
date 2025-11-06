@@ -87,8 +87,9 @@ export default function LandingPage() {
             <span className="text-gray-300">you need to know.</span>
           </h1>
           <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Store your memories in natural language. Search instantly. Ask AI
-            anything about what you&apos;ve saved.
+            Never lose your keys again. Never forget where you put that
+            document. Just type what happened, and ask Memoria anything later.
+            It understands context, not just keywords.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
@@ -133,12 +134,12 @@ export default function LandingPage() {
             <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800">
               <div className="text-4xl mb-4">💾</div>
               <h3 className="text-2xl font-bold text-white mb-3">
-                Natural Language Storage
+                Just type what happened
               </h3>
               <p className="text-gray-400 leading-relaxed">
-                Store memories in plain English. Just tell Memoria what you want
-                to remember, and it handles the rest. No forms, no tags, no
-                complexity.
+                Forget about categories, folders, or tags. Type &quot;I left my
+                keys in the jacket pocket&quot; and Memoria remembers it. No
+                structure needed—just write like you&apos;re texting yourself.
               </p>
             </div>
 
@@ -146,11 +147,13 @@ export default function LandingPage() {
             <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800">
               <div className="text-4xl mb-4">🤖</div>
               <h3 className="text-2xl font-bold text-white mb-3">
-                Chat with your memories
+                Ask like you&apos;re talking to a friend
               </h3>
               <p className="text-gray-400 leading-relaxed">
-                Ask questions about anything you&apos;ve saved. Our AI searches
-                your memories and gives you accurate answers with sources.
+                &quot;Where did I put my passport?&quot; or &quot;What did I say
+                about that restaurant?&quot; Memoria understands context, not
+                just keywords. It finds what you need even if you can&apos;t
+                remember the exact words.
               </p>
             </div>
 
@@ -158,11 +161,13 @@ export default function LandingPage() {
             <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800">
               <div className="text-4xl mb-4">🔍</div>
               <h3 className="text-2xl font-bold text-white mb-3">
-                Instant Search
+                Find anything, anytime
               </h3>
               <p className="text-gray-400 leading-relaxed">
-                Semantic search that actually works. Find that memory from weeks
-                ago by searching for concepts, not just keywords.
+                Search for &quot;blue folder&quot; and it finds &quot;the navy
+                blue folder in my desk drawer.&quot; Memoria understands
+                meaning, so you don&apos;t need to remember exact phrases from
+                months ago.
               </p>
             </div>
 
@@ -170,11 +175,13 @@ export default function LandingPage() {
             <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800">
               <div className="text-4xl mb-4">🧠</div>
               <h3 className="text-2xl font-bold text-white mb-3">
-                Build your second brain
+                Your memory, amplified
               </h3>
               <p className="text-gray-400 leading-relaxed">
-                Every memory is organized and connected. Build your personal
-                knowledge base that grows smarter over time.
+                Every random thought, location, or detail you save becomes part
+                of your searchable memory. The more you use it, the more useful
+                it becomes. It&apos;s like having perfect recall for everything
+                you choose to remember.
               </p>
             </div>
           </div>
@@ -200,11 +207,14 @@ export default function LandingPage() {
               </div>
               <div className="flex-1">
                 <h3 className="text-2xl font-bold text-white mb-3">
-                  Store a memory
+                  Save it when you think of it
                 </h3>
                 <p className="text-gray-400 leading-relaxed text-lg">
-                  Type what you want to remember in natural language. For
-                  example: &quot;I kept my credit card in the wooden shelf&quot;
+                  That moment when you put something somewhere and think
+                  &quot;I&apos;ll remember this&quot;—but you won&apos;t. Just
+                  type it into Memoria right then. &quot;Left my charger at
+                  Sarah&apos;s place&quot; or &quot;The good coffee shop is on
+                  Main Street, second floor.&quot; Takes 5 seconds.
                 </p>
               </div>
             </div>
@@ -216,11 +226,14 @@ export default function LandingPage() {
               </div>
               <div className="flex-1">
                 <h3 className="text-2xl font-bold text-white mb-3">
-                  Ask anything
+                  Ask when you need it
                 </h3>
                 <p className="text-gray-400 leading-relaxed text-lg">
-                  Search or chat with AI about your saved memories. It&apos;s
-                  like having perfect recall of everything you&apos;ve stored.
+                  Later, when you&apos;re standing in your room wondering where
+                  your keys are, just ask: &quot;Where are my keys?&quot;
+                  Memoria searches through everything you&apos;ve saved and
+                  tells you exactly where you left them. No scrolling, no
+                  guessing.
                 </p>
               </div>
             </div>
@@ -232,11 +245,13 @@ export default function LandingPage() {
               </div>
               <div className="flex-1">
                 <h3 className="text-2xl font-bold text-white mb-3">
-                  Never forget again
+                  It gets smarter as you use it
                 </h3>
                 <p className="text-gray-400 leading-relaxed text-lg">
-                  Your memories are stored securely and searchable forever.
-                  Build your personal knowledge base that grows with you.
+                  Every memory you save makes Memoria more useful. After a few
+                  weeks, you&apos;ll have a searchable record of where things
+                  are, what you thought, and what you need to remember.
+                  It&apos;s your external brain that never forgets.
                 </p>
               </div>
             </div>
@@ -248,12 +263,15 @@ export default function LandingPage() {
       <section className="py-24 px-6 bg-gray-950">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            &quot;Why we built this&quot;
+            Why we built this
           </h2>
           <p className="text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto">
-            We were tired of forgetting where we put things. Of losing important
-            information. Of not being able to find what we need when we need it.
-            So we built Memoria - your personal memory assistant powered by AI.
+            We kept losing things. Forgetting where we put our keys, our
+            passport, that important document. We tried notes apps, but they
+            required too much structure. We tried search, but it only worked if
+            we remembered the exact words. So we built Memoria—an AI that
+            understands what you mean, not just what you type. Now you can
+            forget about forgetting.
           </p>
         </div>
       </section>
