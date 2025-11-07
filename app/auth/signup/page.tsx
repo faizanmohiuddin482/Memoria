@@ -68,9 +68,10 @@ export default function SignupPage() {
       if (data.user) {
         setSuccess(true);
         // Auto sign in after signup - use window.location for immediate redirect
+        // Give users time to read the email confirmation message
         setTimeout(() => {
           window.location.href = "/app";
-        }, 1500);
+        }, 10000);
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to sign up");
@@ -107,10 +108,22 @@ export default function SignupPage() {
           {success ? (
             <div className="text-center py-8">
               <div className="text-4xl mb-4">✓</div>
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-2xl font-bold text-white mb-3">
                 Account created!
               </h2>
-              <p className="text-gray-400">Redirecting you to the app...</p>
+              <div className="bg-blue-900/20 border border-blue-800 rounded-lg p-4 mb-4">
+                <p className="text-blue-300 text-sm font-medium mb-2">
+                  📧 Check your email
+                </p>
+                <p className="text-blue-400 text-sm">
+                  We&apos;ve sent a confirmation email to{" "}
+                  <strong>{email}</strong>. Please click the link in the email
+                  to verify your account.
+                </p>
+              </div>
+              <p className="text-gray-400 text-sm">
+                Redirecting you to the app...
+              </p>
             </div>
           ) : (
             <form onSubmit={handleSignup} className="space-y-6">

@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [unverifiedEmail, setUnverifiedEmail] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const router = useRouter();
 
@@ -41,6 +42,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setUnverifiedEmail(false);
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -48,7 +50,23 @@ export default function LoginPage() {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        // Check if error is due to unverified email
+        const errorMessage = error.message.toLowerCase();
+        if (
+          errorMessage.includes("email not confirmed") ||
+          errorMessage.includes("email not verified") ||
+          errorMessage.includes("user not confirmed") ||
+          errorMessage.includes("not confirmed")
+        ) {
+          setUnverifiedEmail(true);
+          setError(null);
+          setLoading(false);
+          return;
+        } else {
+          throw error;
+        }
+      }
 
       // Use window.location for immediate redirect with full page reload
       // This ensures the session is available when the page loads
@@ -57,6 +75,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to sign in");
+      setUnverifiedEmail(false);
       setLoading(false);
     }
   };
@@ -90,6 +109,19 @@ export default function LoginPage() {
             {error && (
               <div className="p-3 bg-red-900/30 text-red-400 border border-red-800 rounded-lg text-sm">
                 {error}
+              </div>
+            )}
+
+            {unverifiedEmail && (
+              <div className="p-4 bg-blue-900/20 border border-blue-800 rounded-lg">
+                <p className="text-blue-300 text-sm font-medium mb-2">
+                  📧 Please verify your email
+                </p>
+                <p className="text-blue-400 text-sm">
+                  We&apos;ve sent a confirmation email to{" "}
+                  <strong>{email}</strong>. Please check your inbox and click
+                  the verification link to activate your account.
+                </p>
               </div>
             )}
 
