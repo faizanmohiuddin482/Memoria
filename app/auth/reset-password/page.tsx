@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,8 +18,11 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     // Check for code in URL (from password reset email)
     const code = searchParams.get("code");
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const hashCode = hashParams.get("code");
+    // Guard window access for SSR
+    const hashCode =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.hash.substring(1)).get("code")
+        : null;
     const resetCode = code || hashCode;
 
     if (resetCode) {
@@ -36,7 +39,9 @@ export default function ResetPasswordPage() {
             // Session established, user can now reset password
             setCheckingAuth(false);
             // Clean up URL
-            window.history.replaceState({}, "", "/auth/reset-password");
+            if (typeof window !== "undefined") {
+              window.history.replaceState({}, "", "/auth/reset-password");
+            }
           }
         });
     } else {
@@ -214,5 +219,22 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-black text-white flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin text-2xl mb-4">⟳</div>
+            <p className="text-gray-400">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
