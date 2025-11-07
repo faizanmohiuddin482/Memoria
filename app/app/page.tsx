@@ -17,7 +17,11 @@ export default function Home() {
   >([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
-  const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
+  const [user, setUser] = useState<{
+    id: string;
+    email?: string;
+    user_metadata?: { first_name?: string; last_name?: string };
+  } | null>(null);
 
   const fetchMemories = useCallback(
     async (uid?: string) => {
@@ -88,7 +92,9 @@ export default function Home() {
             </Link>
             <div className="flex items-center gap-4">
               {user && (
-                <span className="text-sm text-gray-400">{user.email}</span>
+                <span className="text-sm text-gray-400">
+                  {user.user_metadata?.first_name || user.email || "User"}
+                </span>
               )}
               <button
                 onClick={handleLogout}
