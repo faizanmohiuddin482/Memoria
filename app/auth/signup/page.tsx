@@ -45,11 +45,15 @@ export default function SignupPage() {
     setSuccess(false);
 
     try {
+      // Use environment variable if available, otherwise use current origin
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+      const redirectUrl = `${appUrl}/auth/callback`;
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/app`,
+          emailRedirectTo: redirectUrl,
         },
       });
 

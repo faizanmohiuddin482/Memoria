@@ -51,9 +51,12 @@ git push origin main
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+   NEXT_PUBLIC_APP_URL=https://your-site.netlify.app
    NODE_VERSION=20
    SECRETS_SCAN_OMIT_KEYS=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY
    ```
+
+   **Important:** Replace `https://your-site.netlify.app` with your actual Netlify URL. This ensures email confirmation links use the correct production URL instead of localhost.
 
    **Note:** `SECRETS_SCAN_OMIT_KEYS` tells Netlify to allow these variables in build output. This is safe because `NEXT_PUBLIC_*` variables are intentionally public (Next.js embeds them in the client bundle).
 
@@ -92,8 +95,11 @@ git push origin main
    netlify env:set NEXT_PUBLIC_SUPABASE_URL "your_supabase_project_url"
    netlify env:set NEXT_PUBLIC_SUPABASE_ANON_KEY "your_supabase_anon_key"
    netlify env:set SUPABASE_SERVICE_ROLE_KEY "your_supabase_service_role_key"
+   netlify env:set NEXT_PUBLIC_APP_URL "https://your-site.netlify.app"
    netlify env:set SECRETS_SCAN_OMIT_KEYS "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY"
    ```
+
+   **Important:** Replace `https://your-site.netlify.app` with your actual Netlify URL.
 
    **Note:** `SECRETS_SCAN_OMIT_KEYS` tells Netlify to allow these variables in build output. This is safe because `NEXT_PUBLIC_*` variables are intentionally public.
 
@@ -102,17 +108,24 @@ git push origin main
    netlify deploy --prod
    ```
 
-## Step 3: Configure Supabase Redirect URLs
+## Step 3: Configure Supabase Redirect URLs ⚠️ CRITICAL
 
-After deployment, you'll get a Netlify URL (e.g., `https://memoria-123.netlify.app`).
+**This step is essential for email confirmation to work!** After deployment, you'll get a Netlify URL (e.g., `https://memoria-123.netlify.app`).
 
 1. **Update Supabase Settings**
+
    - Go to your Supabase project dashboard
    - Navigate to **Authentication** → **URL Configuration**
-   - Add your Netlify URL to "Site URL": `https://your-site.netlify.app`
-   - Add to "Redirect URLs":
+   - **Site URL**: Set to your Netlify URL: `https://your-site.netlify.app`
+   - **Redirect URLs**: Add these URLs (one per line):
      - `https://your-site.netlify.app/auth/callback`
      - `http://localhost:3000/auth/callback` (for local development)
+   - Click **Save**
+
+2. **Why this matters:**
+   - Without this configuration, Supabase will send email confirmation links pointing to `localhost`
+   - Users won't be able to confirm their email addresses
+   - The Site URL is used as the base for all email links
 
 ## Step 4: Update Environment Variables (if needed)
 
@@ -124,14 +137,15 @@ If you need to update environment variables after deployment:
 
 ## Environment Variables Reference
 
-| Variable                        | Description                | Where to Find                                                   |
-| ------------------------------- | -------------------------- | --------------------------------------------------------------- |
-| `GOOGLE_AI_API_KEY`             | Google AI Studio API key   | [Google AI Studio](https://aistudio.google.com/app/apikey)      |
-| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL       | Supabase Dashboard → Settings → API                             |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key          | Supabase Dashboard → Settings → API                             |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Supabase service role key  | Supabase Dashboard → Settings → API                             |
-| `NODE_VERSION`                  | Node.js version            | Set to `20`                                                     |
-| `SECRETS_SCAN_OMIT_KEYS`        | Allow public vars in build | Set to `NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+| Variable                        | Description                | Where to Find                                                       |
+| ------------------------------- | -------------------------- | ------------------------------------------------------------------- |
+| `GOOGLE_AI_API_KEY`             | Google AI Studio API key   | [Google AI Studio](https://aistudio.google.com/app/apikey)          |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL       | Supabase Dashboard → Settings → API                                 |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key          | Supabase Dashboard → Settings → API                                 |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Supabase service role key  | Supabase Dashboard → Settings → API                                 |
+| `NEXT_PUBLIC_APP_URL`           | Your production app URL    | Your Netlify deployment URL (e.g., `https://your-site.netlify.app`) |
+| `NODE_VERSION`                  | Node.js version            | Set to `20`                                                         |
+| `SECRETS_SCAN_OMIT_KEYS`        | Allow public vars in build | Set to `NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY`     |
 
 ## Troubleshooting
 
@@ -156,6 +170,26 @@ If you see an error about secrets being detected in build output:
 - Verify Supabase redirect URLs include your Netlify URL
 - Check that `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are correct
 - Ensure environment variables are set in Netlify (not just in `.env.local`)
+
+### Email Confirmation Links Point to Localhost
+
+If users receive email confirmation links pointing to `localhost`:
+
+1. **Check Supabase Site URL:**
+
+   - Go to Supabase Dashboard → Authentication → URL Configuration
+   - Ensure "Site URL" is set to your Netlify URL (not `http://localhost:3000`)
+   - Click "Save"
+
+2. **Check Environment Variable:**
+
+   - Verify `NEXT_PUBLIC_APP_URL` is set in Netlify environment variables
+   - It should be your production URL: `https://your-site.netlify.app`
+   - After updating, trigger a new deploy
+
+3. **Test:**
+   - After making changes, have a user sign up again
+   - The new confirmation email should use the production URL
 
 ### API Errors
 

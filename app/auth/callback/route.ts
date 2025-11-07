@@ -15,5 +15,7 @@ export async function GET(request: NextRequest) {
   }
 
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(new URL("/app", requestUrl.origin));
+  // Use environment variable if available, otherwise use request origin
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || requestUrl.origin;
+  return NextResponse.redirect(new URL("/app", appUrl));
 }
