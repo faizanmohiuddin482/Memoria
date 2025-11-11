@@ -55,6 +55,20 @@ export async function getUserMemories(userId: string) {
   return data || [];
 }
 
+// Get memory count for a user
+export async function getMemoryCount(userId: string): Promise<number> {
+  const { count, error } = await supabaseAdmin
+    .from("memories")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
+
+  if (error) {
+    throw new Error(`Failed to get memory count: ${error.message}`);
+  }
+
+  return count || 0;
+}
+
 // Delete a memory
 export async function deleteMemory(memoryId: string, userId: string) {
   const { error } = await supabaseAdmin

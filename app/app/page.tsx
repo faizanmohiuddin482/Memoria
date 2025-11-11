@@ -96,6 +96,12 @@ export default function Home() {
                   {user.user_metadata?.first_name || user.email || "User"}
                 </span>
               )}
+              <Link
+                href="/settings"
+                className="text-gray-400 hover:text-white transition-colors text-sm"
+              >
+                Settings
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-gray-400 hover:text-white transition-colors text-sm"

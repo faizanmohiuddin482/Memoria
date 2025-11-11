@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 
 interface MemoryInputProps {
   userId: string;
@@ -60,6 +61,15 @@ export function MemoryInput({ userId, onMemoryAdded }: MemoryInputProps) {
       const data = await response.json();
 
       if (!response.ok) {
+        // Handle memory limit error specifically
+        if (response.status === 403 && data.error === "Memory limit reached") {
+          setMessage({
+            type: "error",
+            text: data.message || "Memory limit reached",
+          });
+          setLoading(false);
+          return;
+        }
         throw new Error(data.error || "Failed to store memory");
       }
 
@@ -115,13 +125,24 @@ export function MemoryInput({ userId, onMemoryAdded }: MemoryInputProps) {
           }`}
           role="alert"
         >
-          <div className="flex items-center gap-2">
-            {message.type === "success" ? (
-              <span className="text-lg">✓</span>
-            ) : (
-              <span className="text-lg">⚠</span>
-            )}
-            <span>{message.text}</span>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              {message.type === "success" ? (
+                <span className="text-lg">✓</span>
+              ) : (
+                <span className="text-lg">⚠</span>
+              )}
+              <span>{message.text}</span>
+            </div>
+            {message.type === "error" &&
+              message.text.includes("memory limit") && (
+                <Link
+                  href="/pricing"
+                  className="ml-7 text-sm underline hover:text-red-300"
+                >
+                  Upgrade to Pro for unlimited memories →
+                </Link>
+              )}
           </div>
         </div>
       )}

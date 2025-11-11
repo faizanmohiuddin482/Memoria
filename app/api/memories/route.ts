@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateEmbedding } from "@/lib/ai/gemini";
-import { storeMemory, getUserMemories } from "@/lib/db/memories";
+import { storeMemory, getUserMemories, getMemoryCount } from "@/lib/db/memories";
+import { createClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});
 
 // GET: Fetch all memories for a user
 export async function GET(request: NextRequest) {
@@ -37,6 +50,35 @@ export async function POST(request: NextRequest) {
         { error: "userId and content are required" },
         { status: 400 }
       );
+    }
+
+    // Check user's subscription plan and memory limit
+    const { data: subscription } = await supabaseAdmin
+      .from("subscriptions")
+      .select("plan_type, status")
+      .eq("user_id", userId)
+      .in("status", ["active", "trialing"])
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    const planType = subscription?.plan_type || "free";
+    const memoryLimit = planType === "free" ? 100 : -1; // -1 means unlimited
+
+    // Check memory count if not unlimited
+    if (memoryLimit !== -1) {
+      const memoryCount = await getMemoryCount(userId);
+      if (memoryCount >= memoryLimit) {
+        return NextResponse.json(
+          {
+            error: "Memory limit reached",
+            message: `You've reached your ${memoryLimit} memory limit. Upgrade to Pro for unlimited memories.`,
+            limit: memoryLimit,
+            current: memoryCount,
+          },
+          { status: 403 }
+        );
+      }
     }
 
     // Generate embedding for the content
